@@ -6,7 +6,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MappTest from './Component/mappTets';
 import Map from './Component/map';
 import Mapbox from './Component/mapbox';
-import MapCharts from './Component/MapCharts';
 
 
 
@@ -22,7 +21,6 @@ function App() {
                         <Route path="/map" element={<Map/>} />
                         <Route path="/mapTest" element={<MappTest/>} />
                         <Route path="/mapbox" element={<Mapbox/>} />
-                        <Route path="/stats" element={<MapCharts/>} />
                     </Routes>
                 </div>
             </Router>
