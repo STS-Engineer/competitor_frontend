@@ -22,9 +22,11 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: npm install, build, and test
+      - name: npm install
         run: |
           npm install
+      - name: npm build
+        run: |    
           npm run build
 
       - name: Zip artifact for deployment
