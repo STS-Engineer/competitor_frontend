@@ -8,13 +8,14 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibW9vdGV6ZmFyd2EiLCJhIjoiY2x1Z3BoaTFqMW9hdjJpc
 function Mapbox() {
     const mapContainerRef = useRef(null);
     const map = useRef(null);
-    const [filters, setFilters] = useState({
+    const [filters] = useState({
         companyName: '',
         Product: '',
         country: '',
         RDLocation: '',
         HeadquartersLocation: '',
     });
+    
     const [companies, setCompanies] = useState([]);
 
 

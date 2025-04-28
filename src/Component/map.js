@@ -282,7 +282,7 @@ useEffect(() => {
 }, [filters.avoPlant, map]); // <-- ONLY map here, not map.current
 
 
-const findClosestCompany = async (selectedPlantname,selectedPlantCoordinates, companies, mapboxToken) => {
+const findClosestCompany = useCallback(async (selectedPlantname, selectedPlantCoordinates, companies, mapboxToken) => {
   let closestCompany = null;
   let minDistance = Infinity;
 
@@ -291,7 +291,7 @@ const findClosestCompany = async (selectedPlantname,selectedPlantCoordinates, co
       const location = r_and_d_location || headquarters_location;
       if (location) {
           try {
-              const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(location)}.json?access_token=${mapboxgl.accessToken}`);
+              const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(location)}.json?access_token=${mapboxToken}`);
               if (response.data.features && response.data.features.length > 0) {
                   const companyCoords = response.data.features[0].geometry.coordinates;
                   const distance = haversineDistance(selectedPlantCoordinates, companyCoords);
@@ -314,10 +314,9 @@ const findClosestCompany = async (selectedPlantname,selectedPlantCoordinates, co
           productionvolumes,
           employeestrength,
           revenues,
-         
+          product
       } = closestCompany;
 
-      // Custom CSS styles (same as before)
       const customStyles = `
           <style>
               .swal2-popup {
@@ -346,7 +345,6 @@ const findClosestCompany = async (selectedPlantname,selectedPlantCoordinates, co
           </style>
       `;
 
-      // Additional details (added to the HTML content)
       const additionalDetails = `
           <strong>Production Volumes:</strong> ${productionvolumes || 'N/A'}<br>
           <strong>Employee Strength:</strong> ${employeestrength || 'N/A'}<br>
@@ -369,7 +367,8 @@ const findClosestCompany = async (selectedPlantname,selectedPlantCoordinates, co
           }
       });
   }
-};
+}, []); // <- empty dependency array if no external variables used
+
 
     useEffect(() => {
         if (!map.current) {
