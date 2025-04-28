@@ -1801,14 +1801,14 @@ const Form = () => {
                 <div className="modal-input-group">
                     <label>EBIT</label>
                     <Input
-                        type="text"
+                        type="text"      
                         value={formData.ebit}
                         onChange={(e) => setFormData({ ...formData, ebit: e.target.value })}
                         className="modern-input"
                     />
                 </div>
                <div className="modal-input-group">
-                    <label>Operating Cash Flow (€)</label>
+                    <label>Operating Cash Flow (€)</label>  
                     <Input
                         type="text"
                         value={formData.operatingcashflow}
