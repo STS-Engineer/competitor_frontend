@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback  } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import mapboxgl from 'mapbox-gl';
 import axios from 'axios';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -58,12 +58,19 @@ function Map() {
         fetchCompanies();
     }, []);
 
-    const showModal = (company) => {
+    const showModal = useCallback((company) => {
       setSelectedCompany(company);
       setIsModalVisible(true);
-    };
+    }, []);
 
     
+     
+    const regionBoundaries = useMemo(() => ({
+      Europe: { minLat: 36, maxLat: 71, minLng: -33, maxLng: 41 },
+      East_Asia: { minLat: 18, maxLat: 54, minLng: 100, maxLng: 150 },
+      South_Asia: { minLat: 5, maxLat: 35, minLng: 65, maxLng: 106 },
+      NAFTA: { minLat: 10, maxLat: 72, minLng: -168, maxLng: -34 },
+    }), []);
     const addMarkersForFilteredCompanies = useCallback(() => {
       if (!showRdLocation) return;
     
@@ -183,34 +190,6 @@ function Map() {
     }, [companies, filters, map, regionBoundaries, showModal, showHeadquarterLocation]);
 
 
-     
- const regionBoundaries = {
-  Europe: {
-   minLat: 36,
-   maxLat: 71,
-   minLng: -33,
-   maxLng: 41,
- },
- East_Asia: {
-   minLat: 18,
-   maxLat: 54,
-   minLng: 100,
-   maxLng: 150,
-  },
- South_Asia: {
-   minLat: 5,
-   maxLat: 35,
-   minLng: 65,
-   maxLng: 106,
-    },
-  NAFTA: {
-   minLat: 10,
-   maxLat: 72,
-   minLng: -168,
-   maxLng: -34,
- }
-
- };
 
      const markersRef = useRef([]);
 useEffect(() => {
@@ -318,29 +297,39 @@ useEffect(() => {
     }, [companies, filters,showRdLocation, showHeadquarterLocation,addAvoPlantMarkers, addMarkersForFilteredCompanies, addMarkersheadquarterForFilteredCompanies]);
  
 
-    const addAvoPlantPopup = () => {
+    const addAvoPlantPopup = useCallback(() => {
       if (!filters.avoPlant) return;
-      const selectedPlant = avoPlants.find(plant => plant.name.toLowerCase() === filters.avoPlant.toLowerCase());
+    
+      const selectedPlant = avoPlants.find(
+        plant => plant.name.toLowerCase() === filters.avoPlant.toLowerCase()
+      );
+    
       if (selectedPlant) {
-          map.current.flyTo({
-              center: selectedPlant.coordinates,
-              zoom: 10,
-              essential: true
-          });
-   
-          new mapboxgl.Popup()
-              .setLngLat(selectedPlant.coordinates)
-              .setText(selectedPlant.name)
-              .addTo(map.current);
-   
-          // Find the nearest company to the selected AVO plant
-          findClosestCompany(selectedPlant.name, selectedPlant.coordinates, companies, mapboxgl.accessToken);
+        map.current.flyTo({
+          center: selectedPlant.coordinates,
+          zoom: 10,
+          essential: true
+        });
+    
+        new mapboxgl.Popup()
+          .setLngLat(selectedPlant.coordinates)
+          .setText(selectedPlant.name)
+          .addTo(map.current);
+    
+        // Find the nearest company to the selected AVO plant
+        findClosestCompany(
+          selectedPlant.name,
+          selectedPlant.coordinates,
+          companies,
+          mapboxgl.accessToken
+        );
       }
-     };
-     
-  useEffect(() => {
-    addAvoPlantPopup();
-  }, [addAvoPlantPopup, filters.avoPlant]);// Include the function in dependencies
+    }, [filters.avoPlant, avoPlants, map, companies, findClosestCompany]); 
+    // <- dependencies it needs to work properly
+    
+    useEffect(() => {
+      addAvoPlantPopup();
+    }, [addAvoPlantPopup, filters.avoPlant]);
    
  
  
