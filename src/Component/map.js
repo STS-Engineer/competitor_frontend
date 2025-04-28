@@ -269,8 +269,107 @@ useEffect(() => {
     }
 }, [companies, filters]);
 
+ // Add markers for AVO plants
+ const addAvoPlantMarkers = useCallback(() => {
+  avoPlants.forEach(plant => {
+      if (filters.avoPlant === '' || plant.name.toLowerCase() === filters.avoPlant.toLowerCase()) {
+          new mapboxgl.Marker({ color: 'red', scale: 0.7 })
+              .setLngLat(plant.coordinates)
+              .setPopup(new mapboxgl.Popup().setHTML(`<h3>${plant.name}</h3>`))
+              .addTo(map.current);
+      }
+  });
+}, [filters.avoPlant, map.current]);
 
- 
+const findClosestCompany = async (selectedPlantname,selectedPlantCoordinates, companies, mapboxToken) => {
+  let closestCompany = null;
+  let minDistance = Infinity;
+
+  for (const company of companies) {
+      const { r_and_d_location, headquarters_location } = company;
+      const location = r_and_d_location || headquarters_location;
+      if (location) {
+          try {
+              const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(location)}.json?access_token=${mapboxgl.accessToken}`);
+              if (response.data.features && response.data.features.length > 0) {
+                  const companyCoords = response.data.features[0].geometry.coordinates;
+                  const distance = haversineDistance(selectedPlantCoordinates, companyCoords);
+                  if (distance < minDistance) {
+                      minDistance = distance;
+                      closestCompany = { ...company, coordinates: companyCoords };
+                  }
+              }
+          } catch (error) {
+              console.error('Error fetching coordinates: ', error);
+          }
+      }
+  }
+
+  if (closestCompany) {
+      const {
+          name,
+          r_and_d_location,
+          headquarters_location,
+          productionvolumes,
+          employeestrength,
+          revenues,
+         
+      } = closestCompany;
+
+      // Custom CSS styles (same as before)
+      const customStyles = `
+          <style>
+              .swal2-popup {
+                  font-size: 1.2rem;
+                  font-family: 'Arial', sans-serif;
+                  color: #333;
+                  border-radius: 10px;
+                  background: #f7f9fc;
+                  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+              }
+              .swal2-title {
+                  font-size: 1.5rem;
+                  font-weight: bold;
+                  color: #2c3e50;
+              }
+              .swal2-html-container {
+                  text-align: left;
+              }
+              .swal2-html-container strong {
+                  color: #34495e;
+              }
+              .swal2-html-container br + strong {
+                  margin-top: 10px;
+                  display: inline-block;
+              }
+          </style>
+      `;
+
+      // Additional details (added to the HTML content)
+      const additionalDetails = `
+          <strong>Production Volumes:</strong> ${productionvolumes || 'N/A'}<br>
+          <strong>Employee Strength:</strong> ${employeestrength || 'N/A'}<br>
+          <strong>Revenues:</strong> ${revenues || 'N/A'}<br>
+          <strong>Products:</strong> ${product || 'N/A'}<br>
+      `;
+
+      Swal.fire({
+          title: `Closest Company to ${selectedPlantname}`,
+          html: `
+              ${customStyles}
+              <strong>Name:</strong> ${name}<br>
+              <strong>Location:</strong> ${r_and_d_location || headquarters_location}<br>
+              <strong>Distance:</strong> ${minDistance.toFixed(2)} km<br>
+              ${additionalDetails}
+          `,
+          icon: "info",
+          customClass: {
+              popup: 'swal2-popup'
+          }
+      });
+  }
+};
+
     useEffect(() => {
         if (!map.current) {
            map.current = new mapboxgl.Map({
@@ -747,94 +846,7 @@ const handleDownloadPDF = async () => {
     Swal.fire('Error', 'Failed to process company data.', 'error');
   }
 };
-    const findClosestCompany = async (selectedPlantname,selectedPlantCoordinates, companies, mapboxToken) => {
-        let closestCompany = null;
-        let minDistance = Infinity;
-   
-        for (const company of companies) {
-            const { r_and_d_location, headquarters_location } = company;
-            const location = r_and_d_location || headquarters_location;
-            if (location) {
-                try {
-                    const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(location)}.json?access_token=${mapboxgl.accessToken}`);
-                    if (response.data.features && response.data.features.length > 0) {
-                        const companyCoords = response.data.features[0].geometry.coordinates;
-                        const distance = haversineDistance(selectedPlantCoordinates, companyCoords);
-                        if (distance < minDistance) {
-                            minDistance = distance;
-                            closestCompany = { ...company, coordinates: companyCoords };
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error fetching coordinates: ', error);
-                }
-            }
-        }
-   
-        if (closestCompany) {
-            const {
-                name,
-                r_and_d_location,
-                headquarters_location,
-                productionvolumes,
-                employeestrength,
-                revenues,
-               
-            } = closestCompany;
-   
-            // Custom CSS styles (same as before)
-            const customStyles = `
-                <style>
-                    .swal2-popup {
-                        font-size: 1.2rem;
-                        font-family: 'Arial', sans-serif;
-                        color: #333;
-                        border-radius: 10px;
-                        background: #f7f9fc;
-                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-                    }
-                    .swal2-title {
-                        font-size: 1.5rem;
-                        font-weight: bold;
-                        color: #2c3e50;
-                    }
-                    .swal2-html-container {
-                        text-align: left;
-                    }
-                    .swal2-html-container strong {
-                        color: #34495e;
-                    }
-                    .swal2-html-container br + strong {
-                        margin-top: 10px;
-                        display: inline-block;
-                    }
-                </style>
-            `;
-   
-            // Additional details (added to the HTML content)
-            const additionalDetails = `
-                <strong>Production Volumes:</strong> ${productionvolumes || 'N/A'}<br>
-                <strong>Employee Strength:</strong> ${employeestrength || 'N/A'}<br>
-                <strong>Revenues:</strong> ${revenues || 'N/A'}<br>
-                <strong>Products:</strong> ${product || 'N/A'}<br>
-            `;
-   
-            Swal.fire({
-                title: `Closest Company to ${selectedPlantname}`,
-                html: `
-                    ${customStyles}
-                    <strong>Name:</strong> ${name}<br>
-                    <strong>Location:</strong> ${r_and_d_location || headquarters_location}<br>
-                    <strong>Distance:</strong> ${minDistance.toFixed(2)} km<br>
-                    ${additionalDetails}
-                `,
-                icon: "info",
-                customClass: {
-                    popup: 'swal2-popup'
-                }
-            });
-        }
-    };
+
  
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
@@ -844,18 +856,7 @@ const handleDownloadPDF = async () => {
 
  
  
-    // Add markers for AVO plants
-const addAvoPlantMarkers = useCallback(() => {
-        avoPlants.forEach(plant => {
-            if (filters.avoPlant === '' || plant.name.toLowerCase() === filters.avoPlant.toLowerCase()) {
-                new mapboxgl.Marker({ color: 'red', scale: 0.7 })
-                    .setLngLat(plant.coordinates)
-                    .setPopup(new mapboxgl.Popup().setHTML(`<h3>${plant.name}</h3>`))
-                    .addTo(map.current);
-            }
-        });
-      }, [filters.avoPlant, map.current]);
- 
+   
  
  
     const handleInputChange = (event) => {
