@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect} from 'react';
 import axios from 'axios';
 import './form.css';
 import Notification from './Notification/Notification';
 import phonehand from "../assets/logo-avocarbon.png";
-import { useNavigate } from 'react-router-dom';
 import MapComponent from '../Component/mapbox';
 import Navbar from '../Components/Navbar';
 import { MultiSelect } from 'react-multi-select-component';
@@ -317,11 +316,6 @@ const Form = () => {
         }
     };
 
-
-    const optionskeymang = optionskey.map((option) => ({
-        value: option.value,
-        label: option.label,
-      }));
     
       const handleKeyManagementChange = (selectedOptions) => {
         const selectedRoles = selectedOptions.map((option) => option.value);
@@ -344,7 +338,7 @@ const Form = () => {
         e.preventDefault();
         // Implement your update logic here, using formData and selectedCompanyId
         try {
-            const response = await axios.put(`https://compt-back.azurewebsites.net/companies/${selectedCompanyId}`, formData);
+           
             setSuccessMessage('Company updated successfully');
             // Inside handleUpdate function, after successful update
             setSelectedRdLocation(formData.r_and_d_location);
@@ -372,7 +366,7 @@ const Form = () => {
             {!showAddForm && !showEditForm && (
                 <form className="form">
                     {/* Initial form content */}
-                    <img src={phonehand} width={180} height={50} style={{ marginBottom: '20px' }} />
+                    <img src={phonehand} width={180} height={50} style={{ marginBottom: '20px' }} alt="" />
                     <div className="button-container">
                         <button onClick={handleAddForm} className="button">Add a competitor</button>
                         <button onClick={handleEditForm} className="button">Update competitor details</button>
@@ -393,7 +387,7 @@ const Form = () => {
           style={{ marginTop: '70px' }} 
         >
         <form onSubmit={handleSubmit} >
-        <img src={phonehand} width={180} height={50} style={{ marginBottom: '20px' }} />
+        <img src={phonehand} width={180} height={50} style={{ marginBottom: '20px' }} alt=""  />
         <div className="input-group">
        <label htmlFor="name" className="label">Company Name</label>
        <input
@@ -740,7 +734,7 @@ const Form = () => {
         style={{ marginTop: '60px' }} 
     >
         <form className="form" onSubmit={handleSubmit}>
-        <img src={phonehand} width={180} height={50} style={{ display:'block', margin:'20px auto' }} />
+        <img src={phonehand} width={180} height={50} style={{ display:'block', margin:'20px auto' }} alt="" />
         <div className="input-row" style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
   {/* Year of Establishment */}
   <div className="input-group" style={{ flex: 1, paddingTop:'10px' }}>
@@ -1136,7 +1130,7 @@ const Form = () => {
             {/* Edit Form */}
             {showEditForm && currentstepupdate === 1 && (
                 <form  className="form">
-                    <img src={phonehand} width={180} height={50} style={{ marginBottom: '20px' }} />
+                    <img src={phonehand} width={180} height={50} style={{ marginBottom: '20px' }} alt="" />
                     <div className="input-group">
                         <label htmlFor="selectCompany" className="label">Select Company</label>
                         <select name="selectCompany" value={formData.name} onChange={handleSelectChange} className="input">
@@ -1498,7 +1492,7 @@ const Form = () => {
         style={{ marginTop: '60px' }} 
     >
         <form className="form" onSubmit={handleSubmit}>
-        <img src={phonehand} width={180} height={50} style={{ display:'block', margin:'20px auto' }} />
+        <img src={phonehand} width={180} height={50} style={{ display:'block', margin:'20px auto' }} alt=""  />
         <div className="input-row" style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
   {/* Year of Establishment */}
   <div className="input-group" style={{ flex: 1, paddingTop:'10px' }}>

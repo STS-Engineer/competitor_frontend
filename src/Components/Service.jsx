@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { AiOutlinePlayCircle } from "react-icons/ai"
 import { useState } from "react"
 import MiniCard from "./MiniCard";
 import secWoman from "../assets/bg/secWoman.png"
@@ -18,18 +17,7 @@ position: relative;
 display: none;
 }
 `;
-const Image = styled.img`
-height:100%;
-background:no-repeat center center/cover;
-position:absolute;
-bottom:0;
-left:0;
-@media only screen and (max-width: 880px) {
-    left:-20%;
-    width:60rem;
 
-}
-`
 
 const Video = styled.video`
 display: ${(props) => !props.open && "none"};
@@ -74,25 +62,6 @@ justify-content: space-between;
 margin-top: 50px;
 `;
 
-const Button = styled.button`
-width: 180px;
-border: none;
-border-radius: 10px;
-background-color: darkblue;
-color: white;
-font-size: 20px;
-padding: 15px;
-margin-top: 50px;
-display: flex;
-align-items: center;
-cursor:pointer;
-z-index:2;
-`;
-
-const Icon = styled.span`
-font-size:1.3rem;
-margin:.3rem .2rem 0 0 ;
-`;
 
 const Modal = styled.div`
 width: 100vw;

@@ -4,8 +4,7 @@ import AnimatedShapes from "./AnimatedShapes";
 import { Link } from 'react-router-dom';
 
 const Intro = () => {
-  const smallScreen = window.screen.width <= 480 ? true : false;
-  
+
   return (
     <Container>
       <Left>
@@ -126,16 +125,5 @@ const Right = styled.div`
 width:40%;
 `;
 
-const Image = styled.img`
-width:50rem;
-position:absolute;
-bottom:0;
-right:0%;
-
-@media only screen and (max-width: 880px) {
-  right:-20%;
- };
-
-`;
 
 export default Intro;

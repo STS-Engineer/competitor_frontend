@@ -10,7 +10,7 @@ const Navbar = () => {
     return (
         <Container>
             <LogoLink to="/">
-                <img src={phonehand} width={140} height={30} />
+            <img src={phonehand} alt="Phone in hand" width={140} height={30} />
             </LogoLink>
             <Menu style={{ display: smallScreen ? "none" : "flex" }}>
             <Link to="/">
@@ -41,10 +41,7 @@ const LogoLink = styled(Link)`
     margin-right: 2rem; /* Add margin between the logo and the menu */
 `;
 
-const Logo = styled.a`
-    font-size: 2rem;
-    text-decoration: underline crimson;
-`;
+
 
 const Container = styled.div`
     padding: 0 1rem;
@@ -110,15 +107,6 @@ const Item = styled.li`
     margin: 1rem;
 `;
 
-const Button = styled.button`
-    height: 2rem;
-    padding: 0 .6rem;
-    border-radius: .5rem;
-    border: 1px solid white;
-    color: white;
-    background: #046eaf;
-    cursor: pointer;
-    margin-left: 35%;
-`;
+
 
 export default Navbar;

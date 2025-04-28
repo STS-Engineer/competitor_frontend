@@ -4,7 +4,6 @@ import axios from 'axios';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import * as XLSX from 'xlsx';    
 import Swal from 'sweetalert2';
 import {useNavigate} from 'react-router-dom';
 import Navbar from '../Components/Navbar';
@@ -40,13 +39,11 @@ function Map() {
         avoPlant: ''
     });
     const [companies, setCompanies] = useState([]);
-    const [filteredCompanies, setFilteredCompanies] = useState([]);
     const [companyNames, setCompanyNames] = useState([]);
     const [product, setProduct] = useState([]);
     const [country, setCountry] = useState([]);
     const [Rdlocation, setRdlocation] = useState([]);
     const [headquarterlocation, setHeadquarterlocation] = useState([]);
-    const [region, setRegions] = useState([]);
     const [showRdLocation, setShowRdLocation] = useState(true);
     const [showHeadquarterLocation, setShowHeadquarterLocation] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -196,9 +193,7 @@ useEffect(() => {
             const Headquarterlocation = response.data.map(company => company.headquarters_location);
             setHeadquarterlocation(Headquarterlocation);
  
-            // Inside fetchCompanies function, extract regions from the fetched data
-           const regions = Array.from(new Set(response.data.map(company => company.region)));
-           setRegions(regions);
+         
         } catch (error) {
             console.error('Error fetching companies: ', error);
         }
@@ -281,7 +276,7 @@ useEffect(() => {
    
 const addMarkersForFilteredCompanies = () => {
         if (!showRdLocation) return;
-        let regionFound = false; // Flag to check if region filter is applied
+    
        
         companies.forEach(company => {
             const { r_and_d_location, product, name, country, headquarters_location, region } = company;
@@ -292,7 +287,7 @@ const addMarkersForFilteredCompanies = () => {
             const filterCountry = filters.country.toLowerCase();
             const filterRdLocation = filters.RDLocation.toLowerCase();
             const filterHeadquartersLocation = filters.HeadquartersLocation.toLowerCase();
-            const filterRegion = filters.region.toLowerCase();
+          
     
             if (
                 r_and_d_location &&
@@ -319,9 +314,7 @@ const addMarkersForFilteredCompanies = () => {
                                 }
                                }
                                 }
-                            const longitude = coordinates[0];
-                            const latitude = coordinates[1];
-    
+                         
                             // Add marker for company location
                             let markerColor = '#000'; // Default color
                             if (product) {
@@ -413,8 +406,6 @@ const addMarkersheadquarterForFilteredCompanies = () => {
                                 }
                         const [longitude, latitude] = coordinates;
 
-                        // Use a consistent color for headquarter markers (e.g., blue)
-                        const markerColor = '#0000FF'; // Blue for headquarters
 
                         // Add marker for the headquarters location
                          const marker = new mapboxgl.Marker({

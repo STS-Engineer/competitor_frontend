@@ -44,7 +44,7 @@ function Mapbox() {
             addMarkersForFilteredCompanies();
             addMarkersheadquarterForFilteredCompanies();
         }
-    }, [companies, filters]);
+    }, [companies, filters, addMarkersForFilteredCompanies, addMarkersheadquarterForFilteredCompanies]);
 
 
     const fetchCompanies = async () => {
