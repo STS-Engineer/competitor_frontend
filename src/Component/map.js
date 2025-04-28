@@ -322,11 +322,11 @@ useEffect(() => {
           // Find the nearest company to the selected AVO plant
           findClosestCompany(selectedPlant.name, selectedPlant.coordinates, companies, mapboxgl.accessToken);
       }
-  };
+     };
      
-    useEffect(() => {
-      addAvoPlantPopup();
-    }, [filters.avoPlant, addAvoPlantPopup]); // Include the function in dependencies
+  useEffect(() => {
+    addAvoPlantPopup();
+  }, [addAvoPlantPopup, filters.avoPlant]);// Include the function in dependencies
    
  
  
@@ -873,7 +873,7 @@ const handleDownloadPDF = async () => {
  
  
     // Add markers for AVO plants
-    const addAvoPlantMarkers = () => {
+const addAvoPlantMarkers = useCallback(() => {
         avoPlants.forEach(plant => {
             if (filters.avoPlant === '' || plant.name.toLowerCase() === filters.avoPlant.toLowerCase()) {
                 new mapboxgl.Marker({ color: 'red', scale: 0.7 })
@@ -882,7 +882,7 @@ const handleDownloadPDF = async () => {
                     .addTo(map.current);
             }
         });
-    };
+      }, [filters.avoPlant, map.current]);
  
  
  
