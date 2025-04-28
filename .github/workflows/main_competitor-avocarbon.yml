@@ -23,11 +23,9 @@ jobs:
           node-version: '22.x'
 
       - name: npm install
-        run: |
-          npm install
+        run: npm install
       - name: npm build
-        run: |    
-          npm run build
+        run:  npm run build
 
       - name: Zip artifact for deployment
         run: zip -r release.zip build/
