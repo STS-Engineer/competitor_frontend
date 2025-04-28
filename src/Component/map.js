@@ -272,14 +272,15 @@ useEffect(() => {
  // Add markers for AVO plants
  const addAvoPlantMarkers = useCallback(() => {
   avoPlants.forEach(plant => {
-      if (filters.avoPlant === '' || plant.name.toLowerCase() === filters.avoPlant.toLowerCase()) {
-          new mapboxgl.Marker({ color: 'red', scale: 0.7 })
-              .setLngLat(plant.coordinates)
-              .setPopup(new mapboxgl.Popup().setHTML(`<h3>${plant.name}</h3>`))
-              .addTo(map.current);
-      }
+    if (filters.avoPlant === '' || plant.name.toLowerCase() === filters.avoPlant.toLowerCase()) {
+      new mapboxgl.Marker({ color: 'red', scale: 0.7 })
+        .setLngLat(plant.coordinates)
+        .setPopup(new mapboxgl.Popup().setHTML(`<h3>${plant.name}</h3>`))
+        .addTo(map.current);
+    }
   });
-}, [filters.avoPlant, map.current]);
+}, [filters.avoPlant, map]); // <-- ONLY map here, not map.current
+
 
 const findClosestCompany = async (selectedPlantname,selectedPlantCoordinates, companies, mapboxToken) => {
   let closestCompany = null;
@@ -423,7 +424,7 @@ const findClosestCompany = async (selectedPlantname,selectedPlantCoordinates, co
           mapboxgl.accessToken
         );
       }
-    }, [filters.avoPlant, avoPlants, map, companies, findClosestCompany]); 
+    }, [filters.avoPlant,  map, companies, findClosestCompany]); 
     // <- dependencies it needs to work properly
     
     useEffect(() => {
