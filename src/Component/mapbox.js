@@ -23,51 +23,6 @@ function Mapbox() {
         fetchCompanies();
     }, []);
 
-    useEffect(() => {
-        if (!map.current) {
-            map.current = new mapboxgl.Map({
-                container: mapContainerRef.current,
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [0, 0], // Default center
-                zoom: 1 // Default zoom
-            });
-
-            map.current.on('load', () => {
-                // Add markers for the filtered companies after the map has loaded
-                addMarkersForFilteredCompanies();
-                addMarkersheadquarterForFilteredCompanies();
-            });
-        } else {
-            // Clear existing markers before adding new ones
-            clearMarkers();
-            // Add markers for the filtered companies
-            addMarkersForFilteredCompanies();
-            addMarkersheadquarterForFilteredCompanies();
-        }
-    }, [companies, filters, addMarkersForFilteredCompanies, addMarkersheadquarterForFilteredCompanies]);
-
-
-    const fetchCompanies = async () => {
-        try {
-            const response = await axios.get('https://avo-competitor-map-backend.azurewebsites.net/companies');
-            setCompanies(response.data);
-        } catch (error) {
-            console.error('Error fetching companies: ', error);
-        }
-    };
-
-    const clearMarkers = () => {
-        if (map.current) {
-            map.current.remove(); // Remove existing map
-            map.current = new mapboxgl.Map({
-                container: mapContainerRef.current,
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [0, 0], // Default center
-                zoom: 1 // Default zoom
-            });
-        }
-    };
-
 
     const addMarkersForFilteredCompanies = () => {
         companies.forEach(company => {
@@ -186,6 +141,54 @@ function Mapbox() {
             }
         });
     };
+
+
+    useEffect(() => {
+        if (!map.current) {
+            map.current = new mapboxgl.Map({
+                container: mapContainerRef.current,
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [0, 0], // Default center
+                zoom: 1 // Default zoom
+            });
+
+            map.current.on('load', () => {
+                // Add markers for the filtered companies after the map has loaded
+                addMarkersForFilteredCompanies();
+                addMarkersheadquarterForFilteredCompanies();
+            });
+        } else {
+            // Clear existing markers before adding new ones
+            clearMarkers();
+            // Add markers for the filtered companies
+            addMarkersForFilteredCompanies();
+            addMarkersheadquarterForFilteredCompanies();
+        }
+    }, [companies, filters, addMarkersForFilteredCompanies, addMarkersheadquarterForFilteredCompanies]);
+
+
+    const fetchCompanies = async () => {
+        try {
+            const response = await axios.get('https://avo-competitor-map-backend.azurewebsites.net/companies');
+            setCompanies(response.data);
+        } catch (error) {
+            console.error('Error fetching companies: ', error);
+        }
+    };
+
+    const clearMarkers = () => {
+        if (map.current) {
+            map.current.remove(); // Remove existing map
+            map.current = new mapboxgl.Map({
+                container: mapContainerRef.current,
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [0, 0], // Default center
+                zoom: 1 // Default zoom
+            });
+        }
+    };
+
+
 
 
     return (

@@ -161,11 +161,11 @@ useEffect(() => {
             addMarkersheadquarterForFilteredCompanies();
             addAvoPlantMarkers();
         }
-    }, [companies, filters,showRdLocation, showHeadquarterLocation]);
+    }, [companies, filters,showRdLocation, showHeadquarterLocation,addAvoPlantMarkers, addMarkersForFilteredCompanies, addMarkersheadquarterForFilteredCompanies]);
  
     useEffect(() => {
-        addAvoPlantPopup();
-    }, [filters.avoPlant]); // Run when avoPlant filter changes
+      addAvoPlantPopup();
+    }, [filters.avoPlant, addAvoPlantPopup]); // Include the function in dependencies
    
  
  
@@ -276,10 +276,8 @@ useEffect(() => {
    
 const addMarkersForFilteredCompanies = () => {
         if (!showRdLocation) return;
-    
-       
         companies.forEach(company => {
-            const { r_and_d_location, product, name, country, headquarters_location, region } = company;
+            const { r_and_d_location, product, name, country, headquarters_location } = company;
     
             const companyName = name.toLowerCase();
             const filterName = filters.companyName.toLowerCase();
@@ -369,16 +367,14 @@ const addMarkersForFilteredCompanies = () => {
 const addMarkersheadquarterForFilteredCompanies = () => {
     if (!showHeadquarterLocation) return; 
     companies.forEach(company => {
-        const { headquarters_location, product, name, country, region } = company;
+        const { headquarters_location, product, name, country } = company;
 
-        // Convert filter values to lowercase for case-insensitive comparison
+
         const companyName = name.toLowerCase();
         const filterName = filters.companyName.toLowerCase();
         const filterProduct = filters.Product.toLowerCase();
         const filterCountry = filters.country.toLowerCase();
         const filterHeadquartersLocation = filters.HeadquartersLocation.toLowerCase();
-        const filterRegion = filters.region.toLowerCase();
-
         // Check if the company matches all filters
         if (
             headquarters_location && // Ensure headquarters_location is not empty
@@ -404,8 +400,6 @@ const addMarkersheadquarterForFilteredCompanies = () => {
                                 }
                                }
                                 }
-                        const [longitude, latitude] = coordinates;
-
 
                         // Add marker for the headquarters location
                          const marker = new mapboxgl.Marker({
@@ -434,30 +428,7 @@ const addMarkersheadquarterForFilteredCompanies = () => {
     });
 };
 
- 
- 
-    const isMarkerInRegion = (lat, lng, region) => {
-        // Trim whitespace from the region variable
-        region = region.trim();
-        console.log('Region:', region, 'Length:', region.length); // Log the value of the region parameter and its length
-       
-        // Check if the region name is empty
-        if (!region) {
-            console.error('Empty region name provided.');
-            return false;
-        }
-   
-        const boundaries = regionBoundaries[region];
-        if (boundaries) {
-            return lat >= boundaries.minLat && lat <= boundaries.maxLat && lng >= boundaries.minLng && lng <= boundaries.maxLng;
-        } else {
-            console.error('Region boundaries not found for:', region);
-            return false;
-        }
-    };
-   
-   
-   
+
     const haversineDistance = (coords1, coords2) => {
         const toRad = (x) => x * Math.PI / 180;
        

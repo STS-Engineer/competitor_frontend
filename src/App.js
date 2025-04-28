@@ -19,7 +19,6 @@ function App() {
                         <Route path="/form" element={<Form />} />
                         <Route path="/" element={<Homepage />} />
                         <Route path="/map" element={<Map/>} />
-                        <Route path="/mapTest" element={<MappTest/>} />
                         <Route path="/mapbox" element={<Mapbox/>} />
                     </Routes>
                 </div>
