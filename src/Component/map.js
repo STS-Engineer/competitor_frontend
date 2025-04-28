@@ -58,7 +58,12 @@ function Map() {
         fetchCompanies();
     }, []);
 
+    const showModal = (company) => {
+      setSelectedCompany(company);
+      setIsModalVisible(true);
+    };
 
+    
     const addMarkersForFilteredCompanies = useCallback(() => {
       if (!showRdLocation) return;
     
@@ -98,28 +103,7 @@ function Map() {
                   }
                 }
     
-                let markerColor = '#000'; // Default color
-                if (product) {
-                  switch (product.toLowerCase()) {
-                    case 'chokes':
-                      markerColor = '#00FF00'; // Green
-                      break;
-                    case 'seals':
-                      markerColor = '#FFA500'; // Orange
-                      break;
-                    case 'assembly':
-                      markerColor = '#0000FF'; // Blue
-                      break;
-                    case 'injection':
-                      markerColor = '#FF00FF'; // Magenta
-                      break;
-                    case 'brush':
-                      markerColor = '#FFFF00'; // Yellow
-                      break;
-                    default:
-                      break;
-                  }
-                }
+              
     
                 const marker = new mapboxgl.Marker({
                   scale: 0.7
@@ -197,6 +181,36 @@ function Map() {
         }
       });
     }, [companies, filters, map, regionBoundaries, showModal, showHeadquarterLocation]);
+
+
+     
+ const regionBoundaries = {
+  Europe: {
+   minLat: 36,
+   maxLat: 71,
+   minLng: -33,
+   maxLng: 41,
+ },
+ East_Asia: {
+   minLat: 18,
+   maxLat: 54,
+   minLng: 100,
+   maxLng: 150,
+  },
+ South_Asia: {
+   minLat: 5,
+   maxLat: 35,
+   minLng: 65,
+   maxLng: 106,
+    },
+  NAFTA: {
+   minLat: 10,
+   maxLat: 72,
+   minLng: -168,
+   maxLng: -34,
+ }
+
+ };
 
      const markersRef = useRef([]);
 useEffect(() => {
@@ -368,10 +382,7 @@ useEffect(() => {
         brush: "https://2.imimg.com/data2/VE/EI/MY-978046/products6-250x250.jpg",
       };
 
-   const showModal = (company) => {
-        setSelectedCompany(company);
-        setIsModalVisible(true);
-      };
+
        const handleCancel = () => {
         setIsModalVisible(false);
       };
@@ -389,35 +400,7 @@ useEffect(() => {
     };
  
    
- 
- const regionBoundaries = {
-   Europe: {
-    minLat: 36,
-    maxLat: 71,
-    minLng: -33,
-    maxLng: 41,
-  },
-  East_Asia: {
-    minLat: 18,
-    maxLat: 54,
-    minLng: 100,
-    maxLng: 150,
-   },
-  South_Asia: {
-    minLat: 5,
-    maxLat: 35,
-    minLng: 65,
-    maxLng: 106,
-     },
-   NAFTA: {
-    minLat: 10,
-    maxLat: 72,
-    minLng: -168,
-    maxLng: -34,
-  }
 
-  };
- 
     const flyToRegion = (region) => {
         const boundaries = regionBoundaries[region];
         if (boundaries) {
