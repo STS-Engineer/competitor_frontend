@@ -28,8 +28,7 @@ jobs:
         run: echo "CI=false" >> $GITHUB_ENV
         
       - name: npm install, build, and test
-        run: 
-          npm install
+        run: npm install
       - name: Build project
         run: npm run build 
           
