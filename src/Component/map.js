@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback  } from 'react';
 import mapboxgl from 'mapbox-gl';
 import axios from 'axios';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -59,159 +59,144 @@ function Map() {
     }, []);
 
 
-    const addMarkersForFilteredCompanies = () => {
+    const addMarkersForFilteredCompanies = useCallback(() => {
       if (!showRdLocation) return;
+    
       companies.forEach(company => {
-          const { r_and_d_location, product, name, country, headquarters_location } = company;
-  
-          const companyName = name.toLowerCase();
-          const filterName = filters.companyName.toLowerCase();
-          const filterProduct = filters.Product.toLowerCase();
-          const filterCountry = filters.country.toLowerCase();
-          const filterRdLocation = filters.RDLocation.toLowerCase();
-          const filterHeadquartersLocation = filters.HeadquartersLocation.toLowerCase();
-        
-  
-          if (
-              r_and_d_location &&
-              companyName.includes(filterName) &&
-              product.toLowerCase().includes(filterProduct) &&
-              country.toLowerCase().includes(filterCountry) &&
-              r_and_d_location.toLowerCase().includes(filterRdLocation) &&
-              headquarters_location.toLowerCase().includes(filterHeadquartersLocation) 
-          ) {
-              axios
-                  .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(r_and_d_location)}.json?access_token=pk.eyJ1IjoibW9vdGV6ZmFyd2EiLCJhIjoiY2x1Z3BoaTFqMW9hdjJpcGdibnN1djB5cyJ9.It7emRJnE-Ee59ysZKBOJw`)
-                  .then(response => {
-                      if (response.data.features && response.data.features.length > 0) {
-                        const coordinates = response.data.features[0].geometry.coordinates;
-                       if (filters.region) {
-                        const boundaries = regionBoundaries[filters.region];
-                       if (boundaries) {
-                        const [lng, lat] = coordinates;
-                         if (
-                         lat < boundaries.minLat || lat > boundaries.maxLat ||
-                         lng < boundaries.minLng || lng > boundaries.maxLng
-                            ) {
-                            return; // Skip this marker if it's outside the selected region
-                              }
-                             }
-                              }
-                       
-                          // Add marker for company location
-                          let markerColor = '#000'; // Default color
-                          if (product) {
-                              // Set marker color based on product type
-                              switch (product.toLowerCase()) {
-                                  case 'chokes':
-                                      markerColor = '#00FF00'; // Green
-                                      break;
-                                  case 'seals':
-                                      markerColor = '#FFA500'; // Orange
-                                      break;
-                                  case 'assembly':
-                                      markerColor = '#0000FF'; // Blue
-                                      break;
-                                  case 'injection':
-                                      markerColor = '#FF00FF'; // Magenta
-                                      break;
-                                  case 'brush':
-                                      markerColor = '#FFFF00'; // Yellow
-                                      break;
-                                  default:
-                                      break;
-                              }
-                          }
-  
-                    const marker = new mapboxgl.Marker({
-                   scale: 0.7 // Adjust the scale as needed
-                     })
+        const { r_and_d_location, product, name, country, headquarters_location } = company;
+    
+        const companyName = name.toLowerCase();
+        const filterName = filters.companyName.toLowerCase();
+        const filterProduct = filters.Product.toLowerCase();
+        const filterCountry = filters.country.toLowerCase();
+        const filterRdLocation = filters.RDLocation.toLowerCase();
+        const filterHeadquartersLocation = filters.HeadquartersLocation.toLowerCase();
+    
+        if (
+          r_and_d_location &&
+          companyName.includes(filterName) &&
+          product.toLowerCase().includes(filterProduct) &&
+          country.toLowerCase().includes(filterCountry) &&
+          r_and_d_location.toLowerCase().includes(filterRdLocation) &&
+          headquarters_location.toLowerCase().includes(filterHeadquartersLocation) 
+        ) {
+          axios
+            .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(r_and_d_location)}.json?access_token=pk.eyJ1IjoibW9vdGV6ZmFyd2EiLCJhIjoiY2x1Z3BoaTFqMW9hdjJpcGdibnN1djB5cyJ9.It7emRJnE-Ee59ysZKBOJw`)
+            .then(response => {
+              if (response.data.features && response.data.features.length > 0) {
+                const coordinates = response.data.features[0].geometry.coordinates;
+                if (filters.region) {
+                  const boundaries = regionBoundaries[filters.region];
+                  if (boundaries) {
+                    const [lng, lat] = coordinates;
+                    if (
+                      lat < boundaries.minLat || lat > boundaries.maxLat ||
+                      lng < boundaries.minLng || lng > boundaries.maxLng
+                    ) {
+                      return; // Skip this marker if outside region
+                    }
+                  }
+                }
+    
+                let markerColor = '#000'; // Default color
+                if (product) {
+                  switch (product.toLowerCase()) {
+                    case 'chokes':
+                      markerColor = '#00FF00'; // Green
+                      break;
+                    case 'seals':
+                      markerColor = '#FFA500'; // Orange
+                      break;
+                    case 'assembly':
+                      markerColor = '#0000FF'; // Blue
+                      break;
+                    case 'injection':
+                      markerColor = '#FF00FF'; // Magenta
+                      break;
+                    case 'brush':
+                      markerColor = '#FFFF00'; // Yellow
+                      break;
+                    default:
+                      break;
+                  }
+                }
+    
+                const marker = new mapboxgl.Marker({
+                  scale: 0.7
+                })
                   .setLngLat(coordinates)
                   .addTo(map.current);
-                
-                  const el = marker.getElement();
-                  el.addEventListener('click', () => {
-                    // Code to display the modal
-                    showModal(company);
-                  });
-                  
-              // Show Ant Design Modal when clicking a marker
-              el.addEventListener('click', (e) => {
-                  e.stopPropagation(); // Prevent map click event from firing
+    
+                const el = marker.getElement();
+                el.addEventListener('click', (e) => {
+                  e.stopPropagation();
                   showModal(company);
                 });
-                      }
-                  })
-                  .catch(error => {
-                      console.error('Error fetching company location: ', error);
-                  });
-          }
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching company location: ', error);
+            });
+        }
       });
-  };
+    }, [companies, filters, map, regionBoundaries, showModal, showRdLocation]);
  
-const addMarkersheadquarterForFilteredCompanies = () => {
-  if (!showHeadquarterLocation) return; 
-  companies.forEach(company => {
-      const { headquarters_location, product, name, country } = company;
-
-
-      const companyName = name.toLowerCase();
-      const filterName = filters.companyName.toLowerCase();
-      const filterProduct = filters.Product.toLowerCase();
-      const filterCountry = filters.country.toLowerCase();
-      const filterHeadquartersLocation = filters.HeadquartersLocation.toLowerCase();
-      // Check if the company matches all filters
-      if (
-          headquarters_location && // Ensure headquarters_location is not empty
+    const addMarkersheadquarterForFilteredCompanies = useCallback(() => {
+      if (!showHeadquarterLocation) return;
+    
+      companies.forEach(company => {
+        const { headquarters_location, product, name, country } = company;
+    
+        const companyName = name.toLowerCase();
+        const filterName = filters.companyName.toLowerCase();
+        const filterProduct = filters.Product.toLowerCase();
+        const filterCountry = filters.country.toLowerCase();
+        const filterHeadquartersLocation = filters.HeadquartersLocation.toLowerCase();
+    
+        if (
+          headquarters_location &&
           companyName.includes(filterName) &&
           product.toLowerCase().includes(filterProduct) &&
           country.toLowerCase().includes(filterCountry) &&
           headquarters_location.toLowerCase().includes(filterHeadquartersLocation)
-      ) {
-          // Fetch coordinates for the headquarters location
+        ) {
           axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(headquarters_location)}.json?access_token=pk.eyJ1IjoibW9vdGV6ZmFyd2EiLCJhIjoiY2x1Z3BoaTFqMW9hdjJpcGdibnN1djB5cyJ9.It7emRJnE-Ee59ysZKBOJw`)
-              .then(response => {
-                  if (response.data.features && response.data.features.length > 0) {
-                      const coordinates = response.data.features[0].geometry.coordinates;
-                        if (filters.region) {
-                        const boundaries = regionBoundaries[filters.region];
-                       if (boundaries) {
-                        const [lng, lat] = coordinates;
-                         if (
-                         lat < boundaries.minLat || lat > boundaries.maxLat ||
-                         lng < boundaries.minLng || lng > boundaries.maxLng
-                            ) {
-                            return; // Skip this marker if it's outside the selected region
-                              }
-                             }
-                              }
-
-                      // Add marker for the headquarters location
-                       const marker = new mapboxgl.Marker({
-                   scale: 0.7 // Adjust the scale as needed
-                     })
+            .then(response => {
+              if (response.data.features && response.data.features.length > 0) {
+                const coordinates = response.data.features[0].geometry.coordinates;
+                
+                if (filters.region) {
+                  const boundaries = regionBoundaries[filters.region];
+                  if (boundaries) {
+                    const [lng, lat] = coordinates;
+                    if (
+                      lat < boundaries.minLat || lat > boundaries.maxLat ||
+                      lng < boundaries.minLng || lng > boundaries.maxLng
+                    ) {
+                      return; // Skip if outside region
+                    }
+                  }
+                }
+    
+                const marker = new mapboxgl.Marker({
+                  scale: 0.7
+                })
                   .setLngLat(coordinates)
                   .addTo(map.current);
-                
-                  const el = marker.getElement();
-                  el.addEventListener('click', () => {
-                    // Code to display the modal
-                    showModal(company);
-                  });
-                  
-              // Show Ant Design Modal when clicking a marker
-              el.addEventListener('click', (e) => {
-                  e.stopPropagation(); // Prevent map click event from firing
+    
+                const el = marker.getElement();
+                el.addEventListener('click', (e) => {
+                  e.stopPropagation();
                   showModal(company);
                 });
-                  }
-              })
-              .catch(error => {
-                  console.error('Error fetching headquarters location:', error);
-              });
-      }
-  });
-};
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching headquarters location:', error);
+            });
+        }
+      });
+    }, [companies, filters, map, regionBoundaries, showModal, showHeadquarterLocation]);
 
      const markersRef = useRef([]);
 useEffect(() => {
