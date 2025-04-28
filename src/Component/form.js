@@ -842,7 +842,7 @@ const Form = () => {
    )}
 
 {/* Key Management Dynamic Inputs */}
-{formData.keymanagement.length > 0 && (
+{Array.isArray(formData.keymanagement) && formData.keymanagement.length > 0 && (
   <div className="input-row" style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
     {formData.keymanagement.map((role) => (
       <div className="input-group" style={{ flex: 1 }} key={role}>
@@ -1600,7 +1600,7 @@ const Form = () => {
    )}
 
 {/* Key Management Dynamic Inputs */}
-{formData.keymanagement.length > 0 && (
+{Array.isArray(formData.keymanagement) && formData.keymanagement.length > 0 &&(
   <div className="input-row" style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
     {formData.keymanagement.map((role) => (
       <div className="input-group" style={{ flex: 1 }} key={role}>
