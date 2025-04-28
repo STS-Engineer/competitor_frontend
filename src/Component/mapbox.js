@@ -24,6 +24,31 @@ function Mapbox() {
     }, []);
 
 
+
+
+    useEffect(() => {
+        if (!map.current) {
+            map.current = new mapboxgl.Map({
+                container: mapContainerRef.current,
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [0, 0], // Default center
+                zoom: 1 // Default zoom
+            });
+
+            map.current.on('load', () => {
+                // Add markers for the filtered companies after the map has loaded
+                addMarkersForFilteredCompanies();
+                addMarkersheadquarterForFilteredCompanies();
+            });
+        } else {
+            // Clear existing markers before adding new ones
+            clearMarkers();
+            // Add markers for the filtered companies
+            addMarkersForFilteredCompanies();
+            addMarkersheadquarterForFilteredCompanies();
+        }
+    }, [companies, filters, addMarkersForFilteredCompanies, addMarkersheadquarterForFilteredCompanies]);
+
     const addMarkersForFilteredCompanies = () => {
         companies.forEach(company => {
             const { r_and_d_location, product, name, country, headquarters_location } = company;
@@ -141,31 +166,6 @@ function Mapbox() {
             }
         });
     };
-
-
-    useEffect(() => {
-        if (!map.current) {
-            map.current = new mapboxgl.Map({
-                container: mapContainerRef.current,
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [0, 0], // Default center
-                zoom: 1 // Default zoom
-            });
-
-            map.current.on('load', () => {
-                // Add markers for the filtered companies after the map has loaded
-                addMarkersForFilteredCompanies();
-                addMarkersheadquarterForFilteredCompanies();
-            });
-        } else {
-            // Clear existing markers before adding new ones
-            clearMarkers();
-            // Add markers for the filtered companies
-            addMarkersForFilteredCompanies();
-            addMarkersheadquarterForFilteredCompanies();
-        }
-    }, [companies, filters, addMarkersForFilteredCompanies, addMarkersheadquarterForFilteredCompanies]);
-
 
     const fetchCompanies = async () => {
         try {

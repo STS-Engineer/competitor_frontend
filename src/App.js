@@ -3,7 +3,6 @@ import './App.css';
 import Form from './Component/form';
 import Homepage from './Homepage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import MappTest from './Component/mappTets';
 import Map from './Component/map';
 import Mapbox from './Component/mapbox';
 
