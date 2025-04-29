@@ -754,10 +754,7 @@ const Form = () => {
       type="text"
       name="foundingyear"
       value={formData.foundingyear}
-      onChange={(e) => {
-        const year = new Date(e.target.value).getFullYear();
-        setFormData({ ...formData, foundingyear: year.toString() });
-      }}
+      onChange={(e) => setFormData({ ...formData, foundingyear: e.target.value })}
       style={{
         padding: "10px 12px",
         fontSize: "14px",
@@ -1512,10 +1509,7 @@ const Form = () => {
       type="text"
       name="foundingyear"
       value={formData.foundingyear}
-      onChange={(e) => {
-        const year = new Date(e.target.value).getFullYear();
-        setFormData({ ...formData, foundingyear: year.toString() });
-      }}
+      onChange={(e) => setFormData({ ...formData, foundingyear: e.target.value })}
       style={{
         padding: "10px 12px",
         fontSize: "14px",
