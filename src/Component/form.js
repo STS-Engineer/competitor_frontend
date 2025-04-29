@@ -338,7 +338,7 @@ const Form = () => {
         e.preventDefault();
         // Implement your update logic here, using formData and selectedCompanyId
         try {
-           
+            const response = await axios.put(`https://compt-back.azurewebsites.net/companies/${selectedCompanyId}`, formData);
             setSuccessMessage('Company updated successfully');
             // Inside handleUpdate function, after successful update
             setSelectedRdLocation(formData.r_and_d_location);
