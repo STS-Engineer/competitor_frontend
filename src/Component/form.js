@@ -754,7 +754,13 @@ const Form = () => {
       type="text"
       name="foundingyear"
       value={formData.foundingyear}
-      onChange={(e) => setFormData({ ...formData, foundingyear: e.target.value })}
+      onChange={(e) => {
+      const value = e.target.value;
+      // Only allow digits and make sure the length is 4 characters
+      if (/^\d{0,4}$/.test(value)) {
+        setFormData({ ...formData, foundingyear: value });
+      }
+    }}
       style={{
         padding: "10px 12px",
         fontSize: "14px",
@@ -1509,7 +1515,13 @@ const Form = () => {
       type="text"
       name="foundingyear"
       value={formData.foundingyear}
-      onChange={(e) => setFormData({ ...formData, foundingyear: e.target.value })}
+      onChange={(e) => {
+      const value = e.target.value;
+      // Only allow digits and make sure the length is 4 characters
+      if (/^\d{0,4}$/.test(value)) {
+        setFormData({ ...formData, foundingyear: value });
+      }
+    }}
       style={{
         padding: "10px 12px",
         fontSize: "14px",
