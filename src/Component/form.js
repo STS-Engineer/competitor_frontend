@@ -889,9 +889,9 @@ const Form = () => {
                     />
                 </div>
                 <div className="input-group">
-                    <label htmlFor="Pricingstrategy" className="label">Pricing Strategy (€)</label>
+                    <label htmlFor="Pricingstrategy" className="label">Pricing Strategy </label>
                     <input
-                        type="number"
+                        type="text"
                         value={formData.pricingstrategy}
                         onChange={(e) => setFormData({ ...formData, pricingstrategy: e.target.value })}
                         className="input modern-input"
@@ -1649,9 +1649,9 @@ const Form = () => {
                     />
                 </div>
                 <div className="input-group">
-                    <label htmlFor="Pricingstrategy" className="label">Pricing Strategy (€)</label>
+                    <label htmlFor="Pricingstrategy" className="label">Pricing Strategy </label>
                     <input
-                        type="number"
+                        type="text"
                         value={formData.pricingstrategy}
                         onChange={(e) => setFormData({ ...formData, pricingstrategy: e.target.value })}
                         className="input modern-input"
