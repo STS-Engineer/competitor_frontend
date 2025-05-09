@@ -771,7 +771,7 @@ const handleDownloadPDF = async () => {
       'Strategic Partnership', 'Comments', 'Employees Per Region', 'Business Strategies', 
       'Year of financial detail', 'Revenue', 'EBIT', 'Operating Cash Flow', 'Investing Cash Flow', 
       'Free Cash Flow', 'ROCE', 'Equity Ratio', 'CEO', 'CFO', 'CTO', 'RD&head', 'Sales head', 
-      'Production head', 'Key decision marker'
+      'Production head', 'Key decision marker', 'Unique generated id '
     ];
 
     const rows = validCompanies.map(company => [
@@ -784,7 +784,7 @@ const handleDownloadPDF = async () => {
       company.employeesperregion, company.businessstrategies, company.financialyear, company.revenue, 
       company.ebit, company.operatingcashflow, company.investingcashflow, company.freecashflow, 
       company.roce, company.equityratio, company.ceo, company.cfo, company.cto, company.rdhead, 
-      company.saleshead, company.productionhead, company.keydecisionmarker
+      company.saleshead, company.productionhead, company.keydecisionmarker, company.generated_id
     ]);
 
     // Create workbook with XlsxPopulate
