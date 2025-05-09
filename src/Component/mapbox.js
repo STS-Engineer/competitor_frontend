@@ -35,7 +35,7 @@ function Mapbox() {
             const filterheadquarters_location = filters.HeadquartersLocation.toLowerCase();
     
             if (r_and_d_location && companyName.includes(filterName) && product.toLowerCase().includes(filterProduct) && country.toLowerCase().includes(filterCountry) && r_and_d_location.toLowerCase().includes(filterr_and_d_location) && headquarters_location.toLowerCase().includes(filterheadquarters_location)) {
-                axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(r_and_d_location)}.json?access_token=your_access_token_here`)
+                axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(r_and_d_location)}.json?access_token=pk.eyJ1IjoibW9vdGV6ZmFyd2EiLCJhIjoiY2x1Z3BoaTFqMW9hdjJpcGdibnN1djB5cyJ9.It7emRJnE-Ee59ysZKBOJw`)
                     .then(response => {
                         if (response.data.features && response.data.features.length > 0) {
                             const coordinates = response.data.features[0].geometry.coordinates;
@@ -84,7 +84,7 @@ function Mapbox() {
             const filterheadquarters_location = filters.HeadquartersLocation.toLowerCase();
     
             if (r_and_d_location && companyName.includes(filterName) && product.toLowerCase().includes(filterProduct) && country.toLowerCase().includes(filterCountry) && r_and_d_location.toLowerCase().includes(filterr_and_d_location) && headquarters_location.toLowerCase().includes(filterheadquarters_location)) {
-                axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(headquarters_location)}.json?access_token=your_access_token_here`)
+                axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(headquarters_location)}.json?access_token=pk.eyJ1IjoibW9vdGV6ZmFyd2EiLCJhIjoiY2x1Z3BoaTFqMW9hdjJpcGdibnN1djB5cyJ9.It7emRJnE-Ee59ysZKBOJw`)
                     .then(response => {
                         if (response.data.features && response.data.features.length > 0) {
                             const coordinates = response.data.features[0].geometry.coordinates;
