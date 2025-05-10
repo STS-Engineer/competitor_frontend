@@ -5,9 +5,8 @@ on:
     branches:
       - main
   workflow_dispatch:
-
 permissions:
-  contents: write
+  contents: write 
 
 jobs:
   build:
@@ -16,27 +15,22 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: '22.x'
 
-      - name: Install dependencies
+      - name: npm install
         run: npm install
+      - name: npm build
+        run:  npm run build
 
-      - name: Build the app
-        run: npm run build
+      - name: Zip artifact for deployment
+        run: zip -r release.zip build/
 
-      - name: Zip build output
-        run: |
-          cd build
-          zip -r ../release.zip .
-          cd ..
-
-      - name: Upload artifact
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
@@ -53,11 +47,14 @@ jobs:
       contents: read
 
     steps:
-      - name: Download artifact
+      - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: node-app
 
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -65,12 +62,12 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8F9F0C4866674EFCA202CA39FB60B32C }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_06DF308FB9A4485AADF94880F8713800 }}
 
-      - name: Wait briefly before deploy
-        run: sleep 30
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'Competitor-avocarbon'
-          package: release.zip
+      - name: 'Deploy to Azure WebApp with Retry'
+        run: |
+              for i in {1..5}; do
+                echo "Attempt $i to deploy..."
+                npx azure-actions-webapp-publish \
+                  --app-name "<your-app-name>" \
+                  --publish-profile "${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}" \
+                  --package "<path-to-package>" && break || sleep 15
+              done
