@@ -62,12 +62,14 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8F9F0C4866674EFCA202CA39FB60B32C }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_06DF308FB9A4485AADF94880F8713800 }}
 
-      - name: 'Deploy to Azure WebApp with Retry'
+      - name: Retry deploy with Azure CLI (up to 5 attempts)
+        env:
+          RESOURCE_GROUP: STS_Developments
         run: |
-              for i in {1..5}; do
-                echo "Attempt $i to deploy..."
-                npx azure-actions-webapp-publish \
-                  --app-name "<your-app-name>" \
-                  --publish-profile "${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}" \
-                  --package "<path-to-package>" && break || sleep 15
-              done
+          for i in {1..5}; do
+            echo "Attempt $i to deploy using az webapp..."
+            az webapp deployment source config-zip \
+              --resource-group "$RESOURCE_GROUP" \
+              --name Competitor-avocarbon \
+              --src release.zip && break || sleep 15
+          done
