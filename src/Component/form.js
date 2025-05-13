@@ -308,6 +308,7 @@ const Form = () => {
                     freecashflow: formData.freecashflow,
                     roce: formData.roce,
                     equityratio: formData.equityratio,
+                    generated_id: formData.generated_id,
                     });
                 setSelectedRdLocation(selectedCompanyData.r_and_d_location); // Set the selected R&D location
             }
@@ -1150,7 +1151,7 @@ const Form = () => {
              <input type="text" name="name" placeholder="Enter company name" value={formData.name}  onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="input" />
             </div>
            <div className="input-group">
-             <label htmlFor="generated_id" className="label">Unique Identifier"</label>
+             <label htmlFor="generated_id" className="label">Unique Identifier</label>
              <input type="text" name="generated_id" placeholder="Generated Unique Identifier" value={formData.generated_id}  onChange={(e) => setFormData({ ...formData, generated_id: e.target.value })} className="input" />
             </div>                    
              </div>
