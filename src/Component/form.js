@@ -57,7 +57,7 @@ const Form = () => {
         saleshead: '',
         productionhead: '',
         keydecisionmarker: '',
-        
+        generated_id: ''
 
     });
     const [successMessage, setSuccessMessage] = useState('');
@@ -1144,11 +1144,16 @@ const Form = () => {
                             ))}
                         </select>
                     </div>
-                    <div className="input-group">
+              <div className="input-row">           
+             <div className="input-group">
              <label htmlFor="name" className="label">Company Name</label>
              <input type="text" name="name" placeholder="Enter company name" value={formData.name}  onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="input" />
-                    </div>
-
+            </div>
+           <div className="input-group">
+             <label htmlFor="generated_id" className="label">Unique Identifier"</label>
+             <input type="text" name="generated_id" placeholder="Generated Unique Identifier" value={formData.generated_id}  onChange={(e) => setFormData({ ...formData, generated_id: e.target.value })} className="input" />
+            </div>                    
+             </div>
         <div className="input-row">
             <div className="input-group">
                 <label htmlFor="email" className="label">E-mail</label>
