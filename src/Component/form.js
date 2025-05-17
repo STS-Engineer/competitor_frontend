@@ -81,7 +81,7 @@ const Form = () => {
   
 
     const options = [
-        { label: 'Chokes', value: 'Chokes' },
+        { label: 'Choke', value: 'Choke' },
         { label: 'Seals', value: 'Seals' },
         { label: 'Assembly', value: 'Assembly' },
         { label: 'Injection', value: 'Injection' },
